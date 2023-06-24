@@ -5,21 +5,44 @@ import people from './data';
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // firts, last element control
-  useEffect(() => {
-    const lastIndex = people.length - 1;
-    if (currentIndex < 0) {
-      setCurrentIndex(lastIndex);
-    }
-    if (currentIndex > lastIndex) {
-      setCurrentIndex(0);
-    }
-  }, [currentIndex, people]);
+  const prevSlide = () => {
+    setCurrentIndex((oldIndex) => {
+      let index = oldIndex - 1;
+      if (index < 0) {
+        index = people.length - 1;
+      }
+      return index;
+    });
+  };
+  const nextSlide = () => {
+    setCurrentIndex((oldIndex) => {
+      let index = oldIndex + 1;
+      if (index > people.length - 1) {
+        index = 0;
+      }
+      return index;
+    });
+  };
 
-  // auto slider
+  // useEffect(() => {
+  //   const lastIndex = people.length - 1;
+  //   if (currentIndex < 0) {
+  //     setCurrentIndex(lastIndex);
+  //   }
+  //   if (currentIndex > lastIndex) {
+  //     setCurrentIndex(0);
+  //   }
+  // }, [currentIndex, people]);
+
   useEffect(() => {
     let slider = setInterval(() => {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((oldIndex) => {
+        let index = oldIndex + 1;
+        if (index > people.length - 1) {
+          index = 0;
+        }
+        return index;
+      });
     }, 3000);
     return () => clearInterval(slider);
   }, [currentIndex]);
@@ -61,16 +84,10 @@ function App() {
             </article>
           );
         })}
-        <button
-          className='prev'
-          onClick={() => setCurrentIndex(currentIndex - 1)}
-        >
+        <button className='prev' onClick={prevSlide}>
           <FiChevronLeft />
         </button>
-        <button
-          className='next'
-          onClick={() => setCurrentIndex(currentIndex + 1)}
-        >
+        <button className='next' onClick={nextSlide}>
           <FiChevronRight />
         </button>
       </div>
